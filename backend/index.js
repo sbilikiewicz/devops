@@ -17,11 +17,12 @@ redisClient.on('connect', () => {
 	console.log("Connected to redis server");
 });
 
-redisClient.get('BoatType', function(err, reply) {
-    if (reply) {
-		console.log(reply);
+redisClient.exists("BoatType", function(err, reply) {
+	if (reply === 1) {
+		console.log("Key exists");
 	} else {
-		redisClient.set("BoatType", "submarine", function(er, repl) {
+		console.log("Key doesn't exist");
+		redisClient.set("BoatType", "submarine", function(err, reply) {
 			console.log(repl);
 		});
 	}
@@ -43,6 +44,32 @@ pgClient.on('error', () => {
 
 pgClient.query("CREATE TABLE IF NOT EXISTS VALUE (INT)")
 
+pgClient.connect(err => {
+    if (err) throw err;
+    else {
+        queryDatabase();
+    }
+});
+
+function queryDatabase() {
+    const query = `
+        DROP TABLE IF EXISTS inventory;
+        CREATE TABLE inventory (id serial PRIMARY KEY, type VARCHAR(50), name VARCHAR(50));
+        INSERT INTO inventory (type, name) VALUES ('BoatType', 'submarine');
+    `;
+
+    pgClient
+        .query(query)
+        .then(() => {
+            console.log('Table created successfully!');
+            pgClient.end(console.log('Closed client connection'));
+        })
+        .catch(err => console.log(err))
+        .then(() => {
+            console.log('Finished execution, exiting now');
+            process.exit();
+        });
+}
 
 app.get("/", (req, res) => {
 	res.send("Hello World!");
