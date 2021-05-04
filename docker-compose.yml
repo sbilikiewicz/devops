@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+    boatapp-redis:
+        image: "redis:alpine"
+    boatapp-postgres:
+        image: 'postgres:alpine'
+        environment:
+            - POSTGRES_PASSWORD=devops
+            - POSTGRES_DB=postgres
+            - POSTGRES_USER=postgres
+        volumes:
+            - ./pgdata:/var/lib/postgresql/data
+    boatapp-nginx:
+        restart: always
+        build: 
+            dockerfile: Dockerfile
+            context: ./boatapp-nginx
+        ports:
+            - '8080:80'
+    boatapp-backend:
+        image: boat-app/boatapp_backend
+        build:
+            dockerfile: Dockerfile
+            context: ./boatapp_backend
+        depends_on:
+            - boatapp-postgres
+            - boatapp-redis
+        environment: 
+            - PGPASSWORD=devops
+            - PGDATABASE=postgres
+            - PGUSER=postgres
+            - PGHOST=boatapp-postgres
+        volumes: 
+            - /opt/app/node_modules/
+    boatapp-frontend:
+        image: boat-app/boatapp_frontend
+        build:
+            dockerfile: Dockerfile
+            context: ./boatapp_frontend
+        depends_on:
+            - boatapp-backend
+        volumes: 
+            - /opt/app/node_modules/
