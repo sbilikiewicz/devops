@@ -2,14 +2,17 @@ version: "3.9"
 services:
     boatapp-redis:
         image: "redis:alpine"
+        container_name: cache
+        expose:
+            - 6379
     boatapp-postgres:
         image: 'postgres:alpine'
         environment:
             - POSTGRES_PASSWORD=devops
             - POSTGRES_DB=postgres
             - POSTGRES_USER=postgres
-        volumes:
-            - ./pgdata:/var/lib/postgresql/data
+        # volumes:
+        #     - ./pgdata:/var/lib/postgresql/data
     boatapp-nginx:
         restart: always
         build: 
@@ -25,11 +28,14 @@ services:
         depends_on:
             - boatapp-postgres
             - boatapp-redis
+        links:
+            - boatapp-redis
         environment: 
             - PGPASSWORD=devops
             - PGDATABASE=postgres
             - PGUSER=postgres
             - PGHOST=boatapp-postgres
+            - REDIS_URL=redis://cache
         volumes: 
             - /opt/app/node_modules/
     boatapp-frontend:

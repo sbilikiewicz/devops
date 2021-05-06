@@ -22,10 +22,7 @@ const dbConnect = () => {
                 setTimeout(dbConnect, 3000);
             }
         } else {
-            client.query('CREATE TABLE IF NOT EXISTS shipowner (ID SERIAL PRIMARY KEY, name varchar(30))').catch((err) => {
-                console.log('failed to create shipowner table');
-            })
-            client.query('CREATE TABLE IF NOT EXISTS boat (ID SERIAL PRIMARY KEY, name varchar(30), shipowner_id integer)').catch((err) => {
+            client.query('CREATE TABLE IF NOT EXISTS boat (ID SERIAL PRIMARY KEY, name varchar(60), owner varchar(60), type varchar(60))').catch((err) => {
                 console.log('failed to create boat table');
             })
             release()
@@ -42,6 +39,7 @@ dbConnect();
 
 app.post('/boats', boat.createBoat);
 app.get('/boats', boat.getBoats);
+app.get('/boats/:id', boat.getBoatById);
 app.put('/boats/:id', boat.updateBoat);
 app.delete('/boats/:id', boat.deleteBoat);
 

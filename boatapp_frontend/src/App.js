@@ -1,14 +1,20 @@
-const axios = require('axios');
+import React, { Component } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Header from './components/Header'
 
-const App = (props) => {
+import BoatsList from './components/BoatsList';
 
-  const handlePostClick = () => {
-      axios.post('/api/boats', {name: 'test boat'}).then( res => {console.log(res)});
+class App extends Component {
+  render() {
+    return (
+        <Router>
+        <div className="container">
+          <Header />
+          <Route exact path="/" component={BoatsList} />
+        </div>
+      </Router>
+    );
   }
-
-return (
-  <button onClick={handlePostClick}>create boat</button>
-);
 }
 
 export default App;
