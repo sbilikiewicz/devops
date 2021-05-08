@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Form from "./Form";
 import {TrashFill, PencilFill, Search} from 'react-bootstrap-icons';
+import {Link} from 'react-router-dom';
 const axios = require('axios')
 
 class BoatsList extends Component {
@@ -19,7 +20,7 @@ class BoatsList extends Component {
     this.callAPI();
   }
   callAPI = async () => {
-    await axios.get("http://localhost:8080/api/boats")
+    await axios.get("/api/boats")
         .then(res => {
           return res.data;
         })
@@ -32,22 +33,8 @@ class BoatsList extends Component {
         });
   };
 
-  getBoatDetails = async (id) => {
-    await axios.get(`http://localhost:8080/api/boats/${id}`)
-    .then(res => {
-      return res.data;
-    })
-    .then(res => {
-      console.log(res)
-      this.setState({ boatDetails: res })
-    })
-    .catch(error => {
-      console.log(error.response)
-    });
-  }
-
   deleteBoat = async (id) => {
-    await axios.delete(`http://localhost:8080/api/boats/${id}`)
+    await axios.delete(`/api/boats/${id}`)
         .then(res => {
           this.callAPI();
         })
@@ -57,7 +44,7 @@ class BoatsList extends Component {
   };
   handleEditBoat = async (event, boat) => {
     event.preventDefault();
-    await axios.put(`http://localhost:8080/api/boats/${boat.id}`, boat)
+    await axios.put(`/api/boats/${boat.id}`, boat)
         .then(res => {
           this.callAPI();
           this.formClear();
@@ -68,7 +55,7 @@ class BoatsList extends Component {
   };
   handleAdd = async (event, boat) => {
     event.preventDefault();
-    await axios.post("http://localhost:8080/api/boats", boat)
+    await axios.post("/api/boats", boat)
         .then( res => {
           this.callAPI();
           this.formClear();
@@ -90,7 +77,7 @@ class BoatsList extends Component {
             <td>
               <TrashFill onClick={() => this.deleteBoat(boat.id)}/>
               <PencilFill onClick={() => this.setState({ boatDetails: boat, mode: 'Edit Boat', handleSubmit: this.handleEditBoat.bind(this) })}/>
-              <Search/>
+              <Link to={`/boat/${boat.id}`}><Search/></Link>
             </td>
           </tr>
         )
@@ -98,6 +85,7 @@ class BoatsList extends Component {
 
     return (
       <div>
+        <h1>Boats Manager</h1>
         <Form handleSubmit={this.state.handleSubmit} mode={this.state.mode} boat={this.state.boatDetails} clear={this.formClear} />
         <table>
           <thead>
