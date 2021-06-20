@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: boatapp-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: boatapp-redis
+  strategy: {}
+  template:
+    spec:
+      containers:
+      - image: redis:alpine
+        imagePullPolicy: ""
+        name: cache
+        ports:
+        - containerPort: 6379
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}

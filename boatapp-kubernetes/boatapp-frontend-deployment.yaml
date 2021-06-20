@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: boatapp-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: boatapp-frontend
+  strategy:
+    type: Recreate
+  template:
+    spec:
+      containers:
+      - image: sbilikiewicz/boatapp_frontend
+        imagePullPolicy: ""
+        name: boatapp-frontend
+        resources: {}
+        volumeMounts:
+        - mountPath: /opt/app/node_modules/
+          name: boatapp-frontend-claim0
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: boatapp-frontend-claim0
+        persistentVolumeClaim:
+          claimName: boatapp-frontend-claim0
+status: {}

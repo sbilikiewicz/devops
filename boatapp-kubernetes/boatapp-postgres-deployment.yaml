@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: boatapp-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: boatapp-postgres
+  strategy: {}
+  template:
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_DB
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: devops
+        - name: POSTGRES_USER
+          value: postgres
+        image: postgres:alpine
+        imagePullPolicy: ""
+        name: boatapp-postgres
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}

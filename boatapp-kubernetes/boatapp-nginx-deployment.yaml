@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: boatapp-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: boatapp-nginx
+  strategy: {}
+  template:
+    spec:
+      containers:
+      - image: sbilikiewicz/boatapp-nginx
+        imagePullPolicy: ""
+        name: boatapp-nginx
+        ports:
+        - containerPort: 80
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}
